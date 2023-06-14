@@ -1,6 +1,7 @@
 import express from "express"; // ESModule
 // const express = require("express"); -> common.js
 import * as ServiceEntries from "./services/exampleService";
+import toNewDiaryEntry from "./utils";
 
 import exampleRouter from "./routes/example";
 
@@ -22,10 +23,15 @@ app.get("/:id", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-  const { id, date, status, phone } = req.body;
+  const toNewDiarie = req.body;
 
-  const newEntry = ServiceEntries.addEntry(id, date, status, phone);
-  res.send(newEntry);
+  try {
+    const newEntry = toNewDiaryEntry(toNewDiarie);
+    // ServiceEntries.addEntry(newEntry);
+    res.json(newEntry);
+  } catch (err) {
+    res.status(400).send("FALLO");
+  }
 });
 
 app.use("/api/example", exampleRouter);
